@@ -215,9 +215,7 @@ table.oses tfoot td{ border-top:2px solid var(--rule); border-bottom:none; font-
 .legend span{ display:inline-flex; align-items:center; gap:8px; }
 .legend i{ width:14px; height:14px; border-radius:3px; display:inline-block; }
 .og-scroll{ overflow-x:auto; }
-table.optgrid{ border-collapse:separate; border-spacing:4px; min-width:640px; width:100%; table-layout:fixed; }
-table.optgrid thead th:first-child, table.optgrid th.row{ width:160px; }
-table.optgrid thead th:last-child{ width:64px; }
+table.optgrid{ border-collapse:separate; border-spacing:4px; min-width:820px; width:100%; table-layout:fixed; }
 table.optgrid th{ font-weight:500; font-size:0.74rem; line-height:1.2; vertical-align:bottom; color:var(--glow-soft); padding:4px; text-align:center; }
 table.optgrid th.row{ text-align:left; font-size:0.95rem; color:#fff; font-weight:600; white-space:nowrap; padding-right:12px; }
 table.optgrid th.grp{ font-size:0.8rem; color:#fff; border-bottom:1px solid #34408A; padding-bottom:6px; }
@@ -250,7 +248,7 @@ table.optgrid td.rate:hover{ transform:none; }
 .broker dt{ font-family:var(--display); font-weight:800; font-stretch:120%; font-size:2rem; color:#fff; line-height:1; }
 .broker dd{ margin:4px 0 0; font-size:0.95rem; color:var(--glow-soft); }
 .broker .fixed{ grid-column:1 / -1; border-top:1px solid #34408A; padding-top:20px; font-size:1rem; color:var(--glow-soft); display:flex; gap:10px; align-items:baseline; }
-.broker .fixed b{ color:#fff; }
+.broker .fixed b{ color:#fff; white-space:nowrap; }
 
 /* ---------- conclusion ---------- */
 .takeaways{ list-style:none; margin:0; padding:0; }
@@ -313,8 +311,48 @@ footer a{ color:#fff; }
   .states, .pipeline{ grid-template-columns:1fr; }
   .scenario-list{ columns:1; }
   .broker{ padding:28px; }
+  .broker .fixed{ flex-direction:column; gap:4px; }
 }
 @media (prefers-reduced-motion:reduce){
   html{ scroll-behavior:auto; }
   *, *::before, *::after{ animation:none !important; transition:none !important; }
 }
+
+/* ================= results update ================= */
+.takeaways.compact li{ font-size:1.05rem; padding:16px 0; }
+.takeaways.compact{ margin-bottom:40px; }
+.grid-title{ color:#fff; font-size:1.1rem; margin:0; }
+table.optgrid th span{ display:block; font-weight:400; font-size:0.78rem; color:var(--glow-soft); }
+table.optgrid thead th.end{ text-align:left; padding-left:10px; }
+table.optgrid td{ font-size:0.72rem; font-weight:600; color:#fff; text-align:center; font-variant-numeric:tabular-nums; }
+table.optgrid td.on-out{ background:rgba(226,56,43,var(--a,1)); }
+table.optgrid td.na{ background:repeating-linear-gradient(135deg, #283272 0 5px, #6B4A86 5px 10px); }
+table.optgrid td.unk{ background:transparent; border:1px dashed #5A67B8; color:var(--glow-soft); }
+table.optgrid td.rate{ text-align:left; font-weight:500; font-size:0.85rem; white-space:normal; line-height:1.25; }
+table.optgrid td.verdict{ color:#9FE0C0; }
+table.optgrid td.verdict.bad{ color:#FFB4AC; }
+.legend .na-swatch{ background:repeating-linear-gradient(135deg, #283272 0 3px, #6B4A86 3px 6px); }
+.method-block.first{ margin-top:0; }
+.tag{ display:inline-block; font-size:0.85rem; font-weight:600; padding:3px 10px; border-radius:20px; background:var(--wall); border:1px solid var(--rule); color:var(--ink-2); }
+.tag.video{ background:#E6EBFF; border-color:var(--glow-soft); color:var(--screen); }
+.tag.audio{ background:#FFF0D6; border-color:#F0C98A; color:#6B4300; }
+.packet, .dns{ margin:0; background:var(--screen); color:#E8ECFF; border-radius:12px; padding:22px; }
+.packet-head{ font-size:0.88rem; color:var(--glow-soft); margin-bottom:12px; }
+.packet dl{ margin:0; }
+.packet dl div{ display:flex; justify-content:space-between; gap:16px; padding:8px 0; border-top:1px solid #2C3778; font-size:0.95rem; }
+.packet dl div:first-child{ border-top:none; }
+.packet dt{ color:var(--glow-soft); }
+.packet dd{ margin:0; color:#fff; font-weight:600; text-align:right; }
+.packet .reply{ border-top:2px solid var(--led) !important; }
+.packet .reply dd{ color:#FFB4AC; }
+.packet figcaption, .dns figcaption{ font-size:0.8rem; color:#97A2D6; margin-top:12px; }
+.dns code{ display:block; font-family:ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size:clamp(0.9rem,2vw,1.15rem); color:#fff; background:#0B1033; border-radius:8px; padding:16px; overflow-x:auto; white-space:nowrap; }
+.dns .slug{ background:rgba(226,56,43,0.35); border-bottom:2px solid var(--led); }
+.dns .plat{ background:rgba(91,124,255,0.3); border-bottom:2px solid var(--glow); }
+.dns-key{ margin:14px 0 0; display:grid; gap:6px; font-size:0.9rem; }
+.dns-key div{ display:flex; gap:10px; }
+.dns-key dt{ font-weight:600; display:flex; align-items:center; gap:8px; min-width:9em; }
+.dns-key dd{ margin:0; color:var(--glow-soft); }
+.dns-key i{ width:12px; height:12px; border-radius:2px; display:inline-block; }
+.k-slug{ background:var(--led); } .k-plat{ background:var(--glow); }
+.broker{ margin-top:64px; }

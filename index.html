@@ -227,85 +227,179 @@
   </div>
 </section>
 
-<!-- ============ FINDING: OPT-OUT ============ -->
+<!-- ============ RQ1: WHEN ACR RUNS ============ -->
 <section class="alt" id="findings">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker alert">Finding: when ACR runs</div>
+      <div class="measure">
+        <h2>Every TV watched the antenna. None watched Netflix.</h2>
+        <p class="lede">We counted a scenario as tracked when the TV sent regular traffic to its ACR endpoint in more than 80% of the 30 opted-in runs. The results were clear-cut: scenarios were tracked in nearly every run or almost never.</p>
+      </div>
+    </div>
+
+    <div class="body-col">
+      <ul class="takeaways compact">
+        <li><b>Antenna broadcasts were tracked on every operating system we could analyze.</b> Over-the-air TV can't be tracked by any app, which makes it a natural target for ACR.</li>
+        <li><b>No TV tracked Netflix or YouTube.</b> For Netflix, this matches publicly reported agreements.</li>
+        <li><b>Tubi, a free ad-supported service, was tracked</b> on Tizen OS (in 29 of 30 runs), Google TV on Sony, and VIDAA OS.</li>
+        <li><b>Most operating systems also tracked their own built-in streaming service.</b> Fire TV OS and Google TV on Sony were the exceptions.</li>
+        <li><b>HDMI tracking varied</b>, and Roku OS was the only one that didn't track it. <b>Screen mirroring was tracked only on VIDAA OS.</b></li>
+        <li><b>Vizio's SmartCast OS sent ACR-pattern traffic even when the TV sat idle</b> on its home screen, in every run.</li>
+      </ul>
+    </div>
+
+    <div class="grid-panel">
+      <div class="sample-banner" id="banner-in">Squares marked ? aren't stated in the paper's text. Fill them in from Figure 7 in js/data.js.</div>
+      <div class="grid-controls">
+        <h3 class="grid-title">ACR-attributable traffic with ACR turned on</h3>
+        <div class="legend">
+          <span><i style="background:var(--glow)"></i>Tracked</span>
+          <span><i style="background:#283272"></i>Not tracked</span>
+        </div>
+      </div>
+      <div class="og-scroll"><table class="optgrid" data-mode="optedIn" data-inspector="insp-in" data-banner="banner-in"></table></div>
+      <div class="inspector" id="insp-in">Select a square to see the scenario and what we observed.</div>
+    </div>
+    <p class="note">Only operating systems where we identified and validated an ACR endpoint are shown. Roku OS has a row for each of its two TVs.</p>
+  </div>
+</section>
+
+<!-- ============ RQ2: OPT-OUT ============ -->
+<section id="optout">
   <div class="wrap">
     <div class="section-head">
       <div class="kicker alert">Finding: opting out</div>
       <div class="measure">
         <h2>Turning ACR off doesn't always turn it off</h2>
-        <p class="lede">The advertised opt-out fully stopped ACR-attributable traffic on only half of the operating systems we tested.</p>
+        <p class="lede">We ran every scenario 30 more times after opting out in the TV's settings. Small amounts of background traffic (under 5% of the opted-in volume) were set aside; anything more was flagged as traffic consistent with ACR.</p>
       </div>
     </div>
 
     <div class="body-col">
       <div class="finding-stat">
-        <div><div class="big">4 of 8</div><div class="small">operating systems where opting out fully stopped ACR traffic</div></div>
-        <div><div class="big red">&gt;60%</div><div class="small">of opted-out scenarios on Samsung Tizen still showed traffic consistent with ACR</div></div>
-        <div><div class="big red">100%</div><div class="small">of opted-out scenarios on Vizio SmartCast sent traffic to a content-correlated endpoint on Amazon Kinesis</div></div>
+        <div><div class="big">4</div><div class="small">operating systems where opting out fully worked: webOS, Google TV on Sony, VIDAA OS and Fire TV OS</div></div>
+        <div><div class="big red">30 of 30</div><div class="small">opted-out runs of Samsung's built-in streaming service still showed traffic consistent with ACR</div></div>
+        <div><div class="big red">100%</div><div class="small">of opted-out runs on Vizio still sent traffic to its Amazon Kinesis ACR endpoint, with no decrease</div></div>
       </div>
+      <ul class="takeaways compact">
+        <li><b>Samsung (Tizen OS):</b> after opting out, traffic consistent with ACR continued in 41 of 60 antenna runs, 18 of 30 HDMI runs and 6 of 30 Tubi runs. It also appeared in a few Idle, Netflix and YouTube runs, even though those aren't tracked when ACR is on.</li>
+        <li><b>Roku OS:</b> the opt-out doesn't apply to Roku's own streaming service. TCL tells users this in its settings menu; Roku TV doesn't. For antenna viewing the opt-out worked on Roku TV, while on TCL traffic continued in 9 of 90 runs.</li>
+        <li><b>Vizio (SmartCast OS):</b> the opt-out setting had no observable effect on traffic to the identified ACR endpoint.</li>
+      </ul>
     </div>
 
     <div class="grid-panel">
-      <div class="sample-banner" id="sample-banner">Sample data. Replace it with your per-scenario results in js/data.js, then set SAMPLE_DATA to false.</div>
+      <div class="sample-banner" id="banner-out">Squares marked ? aren't stated in the paper's text. Fill them in from Figure 7 in js/data.js.</div>
       <div class="grid-controls">
-        <div class="switch" role="group" aria-label="ACR setting">
-          <button type="button" id="mode-in" aria-pressed="false">ACR opted in</button>
-          <button type="button" id="mode-out" aria-pressed="true">ACR opted out</button>
-        </div>
+        <h3 class="grid-title">Traffic consistent with ACR after opting out</h3>
         <div class="legend">
-          <span><i id="legend-on" style="background:var(--led)"></i>ACR traffic observed</span>
-          <span><i style="background:#283272"></i>No ACR traffic</span>
+          <span><i style="background:var(--led)"></i>Runs with ACR-like traffic</span>
+          <span><i class="na-swatch"></i>Opt-out doesn't apply</span>
+          <span><i style="background:#283272"></i>None</span>
         </div>
       </div>
-      <div class="og-scroll"><table class="optgrid" id="optgrid"></table></div>
-      <div class="inspector" id="grid-inspector">Select a square to see the scenario and what was observed.</div>
+      <div class="og-scroll"><table class="optgrid" data-mode="optedOut" data-inspector="insp-out" data-banner="banner-out"></table></div>
+      <div class="inspector" id="insp-out">Select a square to see the scenario and what we observed.</div>
     </div>
 
-    <p class="caveat">These behaviors point to potential privacy violations. Because the traffic is encrypted, we can't see its contents, so we can't confirm exactly what data was sent.</p>
+    <p class="caveat">Most ACR traffic is encrypted, so these results come from how the traffic behaves, not from reading it. We can't confirm what the data contains, or whether it is processed or kept on the companies' servers. VIDAA OS is the exception: its ACR traffic is unencrypted, so we read it directly.</p>
   </div>
 </section>
 
-<!-- ============ FINDING: EXPOSURE ============ -->
-<section id="exposure">
+<!-- ============ RQ3: EXPOSURE ============ -->
+<section class="alt" id="exposure">
   <div class="wrap">
     <div class="section-head">
-      <div class="kicker alert">Finding: exposure</div>
+      <div class="kicker alert">Finding: what's exposed</div>
       <div class="measure">
         <h2>Viewing data left in the open</h2>
-        <p class="lede">Beyond the companies that collect it, we found ACR viewing data reachable by anyone in a position to look.</p>
+        <p class="lede">Even where we can't read ACR traffic, its behavior shows how a TV recognizes content. And on two platforms, what you watch travels unencrypted.</p>
       </div>
     </div>
 
-    <div class="exposure-grid">
-      <div class="exposure">
-        <h3>Sent without encryption</h3>
-        <p>Two providers sent viewing data over unencrypted connections, readable by anyone on the same network path, such as a shared Wi-Fi network or an internet provider.</p>
-        <p>[Optional: name the two providers and what was visible.]</p>
-      </div>
-      <div class="exposure">
-        <h3>An open server</h3>
-        <p>We found an MQTT message broker (a server that relays messages between devices) that anyone could connect to without logging in. It was relaying ACR detection results from TVs as they happened.</p>
-        <p>[Optional: disclosure timeline.]</p>
+    <!-- Audio or video -->
+    <div class="method-block first">
+      <h3>Listening or looking?</h3>
+      <p class="measure">By removing the picture or the sound from our antenna channel, we can tell which signal each TV's ACR relies on.</p>
+      <div class="table-wrap">
+        <table class="devices fingerprint">
+          <thead><tr><th>Operating system</th><th>Recognizes content by</th><th>What we saw</th></tr></thead>
+          <tbody>
+            <tr><td class="os">Tizen OS (Samsung)</td><td><span class="tag video">Video</span></td><td>ACR traffic disappeared on a black screen; removing sound changed nothing.</td></tr>
+            <tr><td class="os">Google TV OS (Sony, Samba TV ACR)</td><td><span class="tag video">Video</span></td><td>Traffic fell by 52.9% on a black screen with sound.</td></tr>
+            <tr><td class="os">webOS (LG, Alphonso ACR)</td><td><span class="tag audio">Audio</span></td><td>Traffic fell by 97.3% when video played without sound.</td></tr>
+            <tr><td class="os">VIDAA OS (Supersonic)</td><td><span class="tag audio">Audio</span></td><td>The unencrypted messages contain an audio fingerprint.</td></tr>
+            <tr><td class="os">Fire TV OS, Roku OS, SmartCast OS</td><td><span class="tag">Can't tell</span></td><td>Traffic looked the same with and without picture or sound.</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
+    <!-- VIDAA plaintext -->
+    <div class="method-block">
+      <div class="method-grid">
+        <div>
+          <h3>VIDAA OS sends ACR data unencrypted</h3>
+          <p>VIDAA OS sends ACR data to servers run by Unruly over MQTT without encryption, so anyone on the network path between the TV and those servers can read it. Each message carries a Client ID, a permanent identifier for the TV that can't be reset, along with the time zone, the app name, the input (antenna, HDMI), the antenna channel and an audio fingerprint.</p>
+          <p>The app name alone can be revealing. We saw ACR on apps such as VIDAA Kids, which raises concerns under the U.S. children's privacy law (COPPA), and Christianity and Money. VIDAA's own HOME OS app sent show and film titles in place of the app name.</p>
+          <p>The servers reply with a genre for what they recognized, including categories such as Religious, Health and Medicine, and Political. When we played The Story of Moses over HDMI, it came back labeled Religious.</p>
+        </div>
+        <figure class="packet" aria-label="Illustration of the fields in a VIDAA ACR message">
+          <div class="packet-head">What an eavesdropper can read</div>
+          <dl>
+            <div><dt>Client ID</dt><dd>Permanent device ID</dd></div>
+            <div><dt>Time zone</dt><dd>Your region</dd></div>
+            <div><dt>App name</dt><dd>VIDAA Kids</dd></div>
+            <div><dt>Input source</dt><dd>HDMI</dd></div>
+            <div><dt>Tuner channel</dt><dd>For antenna viewing</dd></div>
+            <div><dt>Audio fingerprint</dt><dd>What's playing</dd></div>
+            <div class="reply"><dt>Genre returned</dt><dd>Religious</dd></div>
+          </dl>
+          <figcaption>Illustration of the fields we observed, not a real captured message.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Broker -->
     <div class="broker">
       <div>
-        <div class="huge">57,000,000</div>
-        <div class="huge-lbl">ACR detection results exposed by an unauthenticated server</div>
+        <div class="huge">57,000,000+</div>
+        <div class="huge-lbl">ACR detection results from other people's TVs, readable by anyone through the ACR server used by VIDAA OS, which required no login</div>
       </div>
       <dl>
-        <div><dt>1,000,000+</dt><dd>unique TVs in the exposed data</dd></div>
-        <div><dt>3 hours</dt><dd>the ethically limited sample we observed</dd></div>
+        <div><dt>1,000,000+</dt><dd>unique TVs, each tagged with its device ID</dd></div>
+        <div><dt>82</dt><dd>content categories, including Politics, Health and Medicine, and Religious</dd></div>
+        <div><dt>~3 hours</dt><dd>the ethically limited sample we collected</dd></div>
       </dl>
-      <p class="fixed"><b>Remediated.</b> We reported the vulnerability, and the server was secured.</p>
+      <p class="fixed"><b>Partly fixed.</b> VIDAA confirmed the problem after we reported it. The server now requires a login, but messages are still sent unencrypted.</p>
+    </div>
+    <p class="note">We could also send a previously seen message back to the server, and our own test TV received it. That means an attacker could push fake or harmful messages to TVs. For ethical reasons, we didn't try.</p>
+
+    <!-- Amagi -->
+    <div class="method-block">
+      <div class="method-grid">
+        <div>
+          <h3>A viewing history in plain sight, even with ACR off</h3>
+          <p>Separately from ACR, Vizio's free streaming service WatchFree+ puts the name of each show or channel into unencrypted web address lookups (DNS queries and SNI) to Amagi, the company that delivers the streams.</p>
+          <p>Anyone on the network path, such as an internet provider or whoever runs the network, can rebuild an ordered list of what was watched without any ACR data. None of the operating systems we audited mention Amagi in their privacy policy or settings, and there is no way to turn this off.</p>
+        </div>
+        <figure class="dns" aria-label="Example of a program title inside a web address">
+          <div class="packet-head">A lookup as it travels the network</div>
+          <code><span class="slug">soul-5mincrafteng</span>-<span class="plat">vizio</span>.amagi.tv</code>
+          <dl class="dns-key">
+            <div><dt><i class="k-slug"></i>Program title</dt><dd>hyphenated but readable</dd></div>
+            <div><dt><i class="k-plat"></i>Platform</dt><dd>the TV maker</dd></div>
+          </dl>
+          <figcaption>An example of the address format from the paper.</figcaption>
+        </figure>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ============ WHAT IT MEANS ============ -->
-<section class="alt" id="conclusion">
+<section id="conclusion">
   <div class="wrap">
     <div class="section-head">
       <div class="kicker">What it means</div>
@@ -313,10 +407,10 @@
     </div>
     <div class="body-col">
       <ul class="takeaways">
-        <li>ACR runs on the operating systems behind about 95% of U.S. smart TVs, and it can see what you watch regardless of the source.</li>
-        <li>On half of those systems, opting out did not fully stop traffic tied to ACR.</li>
-        <li>Viewing data was exposed over unencrypted connections, and in one case through a server open to anyone.</li>
-        <li>[Add a takeaway or recommendation.]</li>
+        <li>ACR watched antenna broadcasts on every TV we could analyze, and most TVs also watched their own built-in streaming services.</li>
+        <li>Opting out fully worked on only four operating systems. On Samsung and Vizio, traffic consistent with ACR kept flowing, and Roku's opt-out doesn't cover its own streaming service.</li>
+        <li>VIDAA OS sent viewing data, a permanent device ID and sensitive categories without encryption, and its server exposed more than 57 million detection results.</li>
+        <li>Even users who fully opt out aren't safe: Vizio's WatchFree+ reveals program titles to anyone watching the network.</li>
       </ul>
       <p class="closing">[Your closing call to action: what should change, and who should change it.]</p>
     </div>

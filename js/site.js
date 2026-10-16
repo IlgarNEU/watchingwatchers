@@ -2,12 +2,12 @@
 
 /* ---------- Hero: the TV that reports what it sees ---------- */
 const PROGRAMS = [
-  { show: "Evening news",          genre: "Local channel",      a: ["#3E57D6","52%","8%"],  b: ["#7B8CFF","12%","16%"] },
-  { show: "Cooking competition",   genre: "Streaming app",      a: ["#C2552E","10%","30%"], b: ["#F2A65A","60%","12%"] },
-  { show: "Saturday football",     genre: "Cable box, HDMI 1",  a: ["#2E8B57","30%","40%"], b: ["#9BD17A","64%","6%"] },
-  { show: "Animated movie",        genre: "Blu-ray, HDMI 2",    a: ["#B04AD9","58%","20%"], b: ["#FFC95C","14%","10%"] },
-  { show: "Political debate",      genre: "Antenna",            a: ["#5A6B8C","8%","10%"],  b: ["#D9DEE8","62%","24%"] },
-  { show: "Video game",            genre: "Console, HDMI 3",    a: ["#1FA3A3","44%","28%"], b: ["#E2382B","16%","6%"] }
+  { show: "Evening news",        genre: "Antenna",            a: ["#3E57D6","52%","8%"],  b: ["#7B8CFF","12%","16%"] },
+  { show: "Cooking competition", genre: "Streaming app",      a: ["#C2552E","10%","30%"], b: ["#F2A65A","60%","12%"] },
+  { show: "Saturday football",   genre: "Cable box, HDMI 1",  a: ["#2E8B57","30%","40%"], b: ["#9BD17A","64%","6%"] },
+  { show: "Animated movie",      genre: "Blu-ray, HDMI 2",    a: ["#B04AD9","58%","20%"], b: ["#FFC95C","14%","10%"] },
+  { show: "Political debate",    genre: "Antenna",            a: ["#5A6B8C","8%","10%"],  b: ["#D9DEE8","62%","24%"] },
+  { show: "Video game",          genre: "Console, HDMI 3",    a: ["#1FA3A3","44%","28%"], b: ["#E2382B","16%","6%"] }
 ];
 
 function startTV() {
@@ -22,10 +22,9 @@ function startTV() {
 
   function addLine(p, animate) {
     clock = new Date(clock.getTime() + 7000 + Math.random() * 9000);
-    const t = clock.toTimeString().slice(0, 8);
     const li = document.createElement("li");
     if (animate) li.className = "new";
-    li.innerHTML = `<span class="t">${t}</span><span>Matched <b>${p.show}</b></span>`;
+    li.innerHTML = `<span class="t">${clock.toTimeString().slice(0, 8)}</span><span>Matched <b>${p.show}</b></span>`;
     log.prepend(li);
     while (log.children.length > 4) log.lastChild.remove();
     n++; count.textContent = `${n} snapshot${n === 1 ? "" : "s"} matched`;
@@ -35,7 +34,6 @@ function startTV() {
     a.style.background = p.a[0]; a.style.left = p.a[1]; a.style.top = p.a[2];
     b.style.background = p.b[0]; b.style.left = p.b[1]; b.style.top = p.b[2];
   }
-
   if (reduce) { PROGRAMS.slice(0, 4).forEach(p => addLine(p, false)); return; }
   addLine(PROGRAMS[0], false);
   setInterval(() => {
@@ -48,21 +46,27 @@ function startTV() {
   }, 3200);
 }
 
-/* ---------- Opt-out grid ---------- */
-function buildGrid() {
-  const table = document.getElementById("optgrid");
-  if (!table || typeof OPT_OUT_RESULTS === "undefined") return;
-  const insp = document.getElementById("grid-inspector");
-  const btnIn = document.getElementById("mode-in"), btnOut = document.getElementById("mode-out");
-  const legendOn = document.getElementById("legend-on");
-  if (SAMPLE_DATA) document.getElementById("sample-banner").classList.add("show");
-  let mode = "optedOut", selected = null;
+/* ---------- Result grids ----------
+   Any <table class="optgrid" data-mode="optedIn|optedOut"> is filled in. */
+function cellInfo(mode, v) {
+  if (v === null || v === undefined) return { cls: "unk", text: "?", desc: "not yet filled in" };
+  if (mode === "optedIn") return v ? { cls: "on-in", text: "", desc: "ACR-attributable traffic" } : { cls: "", text: "", desc: "no ACR-attributable traffic" };
+  if (v === "na") return { cls: "na", text: "", desc: "the opt-out does not apply to this scenario" };
+  let n, of = 30;
+  if (typeof v === "string") { [n, of] = v.split("/").map(Number); } else n = v;
+  if (!n) return { cls: "", text: "", desc: "no traffic consistent with ACR" };
+  return { cls: "on-out", text: typeof v === "string" ? v : `${n}`, alpha: 0.35 + 0.65 * n / of,
+           desc: `traffic consistent with ACR in ${n} of ${of} measurements` };
+}
+
+function buildGrid(table) {
+  const mode = table.dataset.mode;
+  const insp = document.getElementById(table.dataset.inspector);
+  let selected = null;
 
   function render() {
-    const onClass = mode === "optedIn" ? "on-in" : "on-out";
-    legendOn.style.background = mode === "optedIn" ? "var(--glow)" : "var(--led)";
-    // group header row
-    let html = "<thead><tr><th></th>";
+    let html = `<colgroup><col style="width:150px">${SCENARIOS.map(() => "<col>").join("")}<col style="width:${mode === "optedIn" ? 80 : 160}px"></colgroup>`;
+    html += "<thead><tr><th></th>";
     for (let j = 0; j < SCENARIOS.length; ) {
       const g = SCENARIOS[j].group; let span = 1;
       while (g && j + span < SCENARIOS.length && SCENARIOS[j + span].group === g) span++;
@@ -71,39 +75,49 @@ function buildGrid() {
     }
     html += "<th></th></tr><tr><th></th>";
     SCENARIOS.forEach(s => html += `<th scope="col" title="${s.name}">${s.short}</th>`);
-    html += "<th></th></tr></thead><tbody>";
-    OPT_OUT_RESULTS.forEach((r, i) => {
-      const vals = r[mode], hits = vals.filter(Boolean).length;
-      html += `<tr><th scope="row" class="row">${r.os}</th>`;
-      vals.forEach((v, j) => {
+    html += `<th class="end">${mode === "optedIn" ? "Tracked" : "Opt-out"}</th></tr></thead><tbody>`;
+    RESULTS.forEach((r, i) => {
+      html += `<tr><th scope="row" class="row">${r.os}<span>${r.tv}</span></th>`;
+      r[mode].forEach((v, j) => {
+        const c = cellInfo(mode, v);
         const sel = selected && selected[0] === i && selected[1] === j ? " sel" : "";
-        html += `<td class="${v ? onClass : ""}${sel}" tabindex="0" data-i="${i}" data-j="${j}" aria-label="${r.os}, ${SCENARIOS[j].name}: ${v ? "ACR traffic observed" : "no ACR traffic"}"></td>`;
+        const style = c.alpha ? ` style="--a:${c.alpha.toFixed(2)}"` : "";
+        html += `<td class="${c.cls}${sel}"${style} tabindex="0" data-i="${i}" data-j="${j}" aria-label="${r.os} (${r.tv}), ${SCENARIOS[j].name}: ${c.desc}">${c.text}</td>`;
       });
-      html += `<td class="rate">${hits} / ${vals.length}</td></tr>`;
+      if (mode === "optedIn") {
+        const known = r.optedIn.filter(v => v !== null), hits = known.filter(Boolean).length;
+        html += `<td class="rate">${hits} of ${r.optedIn.length}</td></tr>`;
+      } else {
+        const bad = r.verdict !== "Effective";
+        html += `<td class="rate verdict${bad ? " bad" : ""}">${r.verdict}</td></tr>`;
+      }
     });
     table.innerHTML = html + "</tbody>";
   }
   function inspect(i, j) {
     selected = [i, j];
-    const r = OPT_OUT_RESULTS[i], v = r[mode][j];
+    const r = RESULTS[i], c = cellInfo(mode, r[mode][j]);
+    const notes = (mode === "optedIn" ? r.inNotes : r.outNotes) || {};
     const state = mode === "optedIn" ? "ACR opted in" : "ACR opted out";
-    insp.innerHTML = `<b>${r.os}</b>, ${SCENARIOS[j].name}, ${state}: ${v ? "ACR-attributable traffic observed." : "no ACR-attributable traffic."}${r.note ? " " + r.note : ""}`;
+    insp.innerHTML = `<b>${r.os} (${r.tv})</b>, ${SCENARIOS[j].name}, ${state}: ${c.desc}.${notes[j] ? " " + notes[j] : ""}`;
     render();
   }
   table.addEventListener("click", e => { const td = e.target.closest("td[data-i]"); if (td) inspect(+td.dataset.i, +td.dataset.j); });
   table.addEventListener("keydown", e => {
     const td = e.target.closest("td[data-i]");
-    if (td && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); inspect(+td.dataset.i, +td.dataset.j); table.querySelector(`td[data-i="${td.dataset.i}"][data-j="${td.dataset.j}"]`).focus(); }
+    if (td && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault(); const { i, j } = td.dataset; inspect(+i, +j);
+      table.querySelector(`td[data-i="${i}"][data-j="${j}"]`).focus();
+    }
   });
-  function setMode(m) {
-    mode = m;
-    btnIn.setAttribute("aria-pressed", m === "optedIn");
-    btnOut.setAttribute("aria-pressed", m === "optedOut");
-    if (selected) inspect(selected[0], selected[1]); else render();
-  }
-  btnIn.addEventListener("click", () => setMode("optedIn"));
-  btnOut.addEventListener("click", () => setMode("optedOut"));
   render();
+
+  const missing = RESULTS.some(r => r[mode].some(v => v === null));
+  const banner = document.getElementById(table.dataset.banner);
+  if (banner && missing) banner.classList.add("show");
 }
 
-document.addEventListener("DOMContentLoaded", () => { startTV(); buildGrid(); });
+document.addEventListener("DOMContentLoaded", () => {
+  startTV();
+  if (typeof RESULTS !== "undefined") document.querySelectorAll("table.optgrid").forEach(buildGrid);
+});
