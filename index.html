@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Watching the Watchers: Privacy Analysis of U.S. Smart TV Automatic Content Recognition</title>
+<meta name="description" content="The first automated, at-scale measurement of automatic content recognition (ACR) across the eight dominant U.S. smart-TV operating systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,400..900&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="js/data.js" defer></script>
+<script src="js/site.js" defer></script>
+</head>
+<body>
+
+<nav class="top" aria-label="Main">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="led" aria-hidden="true"></span>Watching the Watchers</a>
+    <div class="links">
+      <a href="index.html" class="active" aria-current="page">Overview</a>
+      <a href="paper.html">Paper</a>
+      <a href="authors.html">Authors</a>
+      <a href="coverage.html">Press</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h2>Watching the Watchers</h2>
+      <p class="subtitle">A privacy analysis of automatic content recognition on U.S. smart TVs</p>
+      <p class="lede">82% of U.S. households have a smart TV that can take snapshots of whatever is on screen and report them back. We measured where that data goes, and whether turning the feature off actually stops it.</p>
+      <div class="hero-actions">
+        <a class="btn solid" href="#findings">See what we found</a>
+        <a class="btn" href="paper.html">Read the paper</a>
+      </div>
+    </div>
+
+    <div class="tv" aria-hidden="true">
+      <div class="tv-set">
+        <div class="tv-screen" id="tv-screen">
+          <div class="tv-shape" id="shape-a" style="width:42%;height:60%;left:52%;top:8%;background:#3E57D6;"></div>
+          <div class="tv-shape" id="shape-b" style="width:26%;height:38%;left:12%;top:16%;background:#7B8CFF;"></div>
+          <div class="tv-scene"><div class="show" id="tv-show">Evening news<span class="genre">Local channel</span></div></div>
+          <div class="tv-flash" id="tv-flash"></div>
+        </div>
+      </div>
+      <div class="tv-stand"></div>
+      <div class="capture-log">
+        <div class="log-head"><span>What the TV reports</span><span id="log-count">0 snapshots matched</span></div>
+        <ol id="capture-log"></ol>
+      </div>
+      <p class="illustrative">Illustration of how ACR works, not data from the study.</p>
+    </div>
+  </div>
+</header>
+
+<!-- ============ STUDY AT A GLANCE ============ -->
+<div class="glance">
+  <div class="wrap">
+    <div class="cell"><div class="num">8</div><div class="lbl">smart-TV operating systems, about 95% of the U.S. market</div></div>
+    <div class="cell"><div class="num">12</div><div class="lbl">commercial TVs tested</div></div>
+    <div class="cell"><div class="num">10</div><div class="lbl">viewing scenarios per TV</div></div>
+    <div class="cell"><div class="num">2</div><div class="lbl">privacy settings: ACR opted in and opted out</div></div>
+    <div class="cell"><div class="num">5,943</div><div class="lbl">automated experiments</div></div>
+  </div>
+</div>
+
+<!-- ============ HOW ACR WORKS ============ -->
+<section id="acr">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">How ACR works</div>
+      <div class="measure">
+        <h2>Your TV recognizes what you watch</h2>
+        <p class="lede">Automatic content recognition (ACR) is built into most smart TVs. It identifies what's playing, whether it comes from an app, an antenna, a game console or a cable box.</p>
+      </div>
+    </div>
+    <ol class="pipeline">
+      <li><h3>Capture</h3><p>The TV takes short audio or video snapshots of whatever is on screen.</p></li>
+      <li><h3>Send</h3><p>Those snapshots, or fingerprints made from them, are sent over the internet to the ACR provider.</p></li>
+      <li><h3>Match</h3><p>The provider compares them with a library of known content to work out exactly what you're watching.</p></li>
+      <li><h3>Monetize</h3><p>Viewing habits can be used for targeted ads and shared with or sold to other companies.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ RESEARCH QUESTIONS ============ -->
+<section class="alt" id="questions">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Research questions</div>
+      <div class="measure">
+        <h2>What we set out to learn</h2>
+        <p class="lede">Little is publicly known about how ACR behaves in practice. Deployments are opaque, and smart TVs are hard to test automatically. We asked four questions.</p>
+      </div>
+    </div>
+    <ul class="questions">
+      <li>Which network endpoints receive ACR data?<span>We exposed each TV to controlled content and validated which endpoints respond to it.</span></li>
+      <li>Which viewing behaviors trigger ACR traffic?<span>Streaming apps, live TV, external inputs and more, across ten scenarios.</span></li>
+      <li>Does opting out of ACR actually stop it?<span>Every scenario was run with ACR turned on and again with it turned off.</span></li>
+      <li>Is viewing data exposed to anyone else?<span>We looked for unencrypted traffic and for data reachable by outside parties.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ METHOD ============ -->
+<section id="method">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Method</div>
+      <div class="measure">
+        <h2>An automated living room</h2>
+        <p class="lede">We built a testbed that drives each TV through the same viewing scenarios without a person at the remote, while recording all of its network traffic.</p>
+      </div>
+    </div>
+
+    <div class="method-grid">
+      <figure class="figure">
+        <img src="images/testbed.jpg" alt="The smart-TV testbed" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="photo-fallback">Add a photo of the testbed at images/testbed.jpg</div>
+        <figcaption>[Caption describing the testbed photo.]</figcaption>
+      </figure>
+      <div>
+        <h3>Two settings for every test</h3>
+        <p>Each scenario ran once with ACR enabled and once after following the TV's own instructions to opt out.</p>
+        <div class="states">
+          <div class="state"><h3><span class="dot" style="background:var(--glow)"></span>Opted in</h3><p>Shows which endpoints are tied to ACR and what triggers them.</p></div>
+          <div class="state"><h3><span class="dot" style="background:var(--led)"></span>Opted out</h3><p>Any ACR traffic here means the opt-out isn't fully working.</p></div>
+        </div>
+        <h3>Ten viewing scenarios</h3>
+        <!-- EDIT: replace with your ten scenarios -->
+        <ol class="scenario-list">
+          <li>[Scenario 1]</li><li>[Scenario 2]</li><li>[Scenario 3]</li><li>[Scenario 4]</li><li>[Scenario 5]</li>
+          <li>[Scenario 6]</li><li>[Scenario 7]</li><li>[Scenario 8]</li><li>[Scenario 9]</li><li>[Scenario 10]</li>
+        </ol>
+      </div>
+    </div>
+
+    <h3 style="margin-top:56px;">The TVs we tested</h3>
+    <p class="measure">Twelve commercial TVs covering the eight operating systems that run about 95% of U.S. smart TVs.</p>
+    <!-- EDIT: one row per TV -->
+    <div class="table-wrap">
+      <table class="devices">
+        <thead><tr><th>Operating system</th><th>Brand</th><th>Model</th><th>Year</th></tr></thead>
+        <tbody>
+          <tr><td class="os">Samsung Tizen</td><td>Samsung</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">Vizio SmartCast</td><td>Vizio</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS 3]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS 4]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS 5]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS 6]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS 7]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS 8]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Results reflect these devices and firmware versions at the time of testing and may not carry over to other models or regions.</p>
+  </div>
+</section>
+
+<!-- ============ FINDING: OPT-OUT ============ -->
+<section class="alt" id="findings">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker alert">Finding: opting out</div>
+      <div class="measure">
+        <h2>Turning ACR off doesn't always turn it off</h2>
+        <p class="lede">The advertised opt-out fully stopped ACR-attributable traffic on only half of the operating systems we tested.</p>
+      </div>
+    </div>
+
+    <div class="body-col">
+      <div class="finding-stat">
+        <div><div class="big">4 of 8</div><div class="small">operating systems where opting out fully stopped ACR traffic</div></div>
+        <div><div class="big red">&gt;60%</div><div class="small">of opted-out scenarios on Samsung Tizen still showed traffic consistent with ACR</div></div>
+        <div><div class="big red">100%</div><div class="small">of opted-out scenarios on Vizio SmartCast sent traffic to a content-correlated endpoint on Amazon Kinesis</div></div>
+      </div>
+    </div>
+
+    <div class="grid-panel">
+      <div class="sample-banner" id="sample-banner">Sample data. Replace it with your per-scenario results in js/data.js, then set SAMPLE_DATA to false.</div>
+      <div class="grid-controls">
+        <div class="switch" role="group" aria-label="ACR setting">
+          <button type="button" id="mode-in" aria-pressed="false">ACR opted in</button>
+          <button type="button" id="mode-out" aria-pressed="true">ACR opted out</button>
+        </div>
+        <div class="legend">
+          <span><i id="legend-on" style="background:var(--led)"></i>ACR traffic observed</span>
+          <span><i style="background:#283272"></i>No ACR traffic</span>
+        </div>
+      </div>
+      <div class="og-scroll"><table class="optgrid" id="optgrid"></table></div>
+      <div class="inspector" id="grid-inspector">Select a square to see the scenario and what was observed.</div>
+    </div>
+
+    <p class="caveat">These behaviors point to potential privacy violations. Because the traffic is encrypted, we can't see its contents, so we can't confirm exactly what data was sent.</p>
+  </div>
+</section>
+
+<!-- ============ FINDING: EXPOSURE ============ -->
+<section id="exposure">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker alert">Finding: exposure</div>
+      <div class="measure">
+        <h2>Viewing data left in the open</h2>
+        <p class="lede">Beyond the companies that collect it, we found ACR viewing data reachable by anyone in a position to look.</p>
+      </div>
+    </div>
+
+    <div class="exposure-grid">
+      <div class="exposure">
+        <h3>Sent without encryption</h3>
+        <p>Two providers sent viewing data over unencrypted connections, readable by anyone on the same network path, such as a shared Wi-Fi network or an internet provider.</p>
+        <p>[Optional: name the two providers and what was visible.]</p>
+      </div>
+      <div class="exposure">
+        <h3>An open server</h3>
+        <p>We found an MQTT message broker (a server that relays messages between devices) that anyone could connect to without logging in. It was relaying ACR detection results from TVs as they happened.</p>
+        <p>[Optional: disclosure timeline.]</p>
+      </div>
+    </div>
+
+    <div class="broker">
+      <div>
+        <div class="huge">57,000,000</div>
+        <div class="huge-lbl">ACR detection results exposed by an unauthenticated server</div>
+      </div>
+      <dl>
+        <div><dt>1,000,000+</dt><dd>unique TVs in the exposed data</dd></div>
+        <div><dt>3 hours</dt><dd>the ethically limited sample we observed</dd></div>
+      </dl>
+      <p class="fixed"><b>Remediated.</b> We reported the vulnerability, and the server was secured.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHAT IT MEANS ============ -->
+<section class="alt" id="conclusion">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">What it means</div>
+      <div><h2>The off switch needs to mean off</h2></div>
+    </div>
+    <div class="body-col">
+      <ul class="takeaways">
+        <li>ACR runs on the operating systems behind about 95% of U.S. smart TVs, and it can see what you watch regardless of the source.</li>
+        <li>On half of those systems, opting out did not fully stop traffic tied to ACR.</li>
+        <li>Viewing data was exposed over unencrypted connections, and in one case through a server open to anyone.</li>
+        <li>[Add a takeaway or recommendation.]</li>
+      </ul>
+      <p class="closing">[Your closing call to action: what should change, and who should change it.]</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Northeastern University</p>
+    <p><a href="paper.html">Read the paper</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
