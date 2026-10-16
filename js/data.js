@@ -6,15 +6,26 @@
    Set to false once the numbers below are your real results. */
 const SAMPLE_DATA = true;
 
-/* Short names for the ten scenarios, in the same order as the list
-   on the page. Shown as column headers (S1…S10) and in the inspector. */
+/* The ten scenarios, in the same order as the columns in each row below
+   (Table 3 in the paper).
+   name:  shown in the inspector when a square is selected
+   short: column header in the grid
+   group: optional; neighbouring columns with the same group get a shared header */
 const SCENARIOS = [
-  "[Scenario 1]", "[Scenario 2]", "[Scenario 3]", "[Scenario 4]", "[Scenario 5]",
-  "[Scenario 6]", "[Scenario 7]", "[Scenario 8]", "[Scenario 9]", "[Scenario 10]"
+  { name: "Idle",                            short: "Idle" },
+  { name: "Antenna: Channel",                short: "Channel",           group: "Antenna" },
+  { name: "Antenna: Black screen + audio",   short: "Black + audio",     group: "Antenna" },
+  { name: "Antenna: Dynamic + no audio",     short: "Video, no audio",   group: "Antenna" },
+  { name: "First-party streaming",           short: "First-party" },
+  { name: "Third-party streaming: Netflix",  short: "Netflix",           group: "Third-party streaming" },
+  { name: "Third-party streaming: Tubi TV",  short: "Tubi TV",           group: "Third-party streaming" },
+  { name: "Third-party streaming: YouTube",  short: "YouTube",           group: "Third-party streaming" },
+  { name: "HDMI",                            short: "HDMI" },
+  { name: "Screen mirroring",                short: "Mirroring" }
 ];
 
 /* One entry per operating system.
-   optedIn / optedOut: ten values, one per scenario.
+   optedIn / optedOut: ten values, one per scenario, in the order above.
      1 = ACR-attributable traffic observed, 0 = none.
    note: optional text shown in the inspector for that OS.
    The values below are PLACEHOLDERS shaped to match the abstract;

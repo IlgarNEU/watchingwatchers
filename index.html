@@ -147,6 +147,29 @@
       </div>
     </div>
  
+    <!-- ---------- All scenarios (Table 3) ---------- -->
+    <div class="method-block">
+      <h3>Ten viewing scenarios</h3>
+      <p class="measure">The scenarios cover the common ways people use a smart TV. Idle, with the TV on the home screen and nobody using it, is the control for spotting baseline traffic.</p>
+      <div class="table-wrap">
+        <table class="devices scenarios">
+          <thead><tr><th>Scenario</th><th>Sub-scenario</th><th>What plays</th></tr></thead>
+          <tbody>
+            <tr class="grp"><td class="os">Idle</td><td class="muted">–</td><td>The home screen, with no interaction</td></tr>
+            <tr class="grp"><td class="os" rowspan="3">Antenna</td><td>Channel</td><td>Our custom broadcast channel with moving picture and sound</td></tr>
+            <tr><td>Black screen + audio</td><td>A constant black frame with sound, over the antenna signal</td></tr>
+            <tr><td>Dynamic + no audio</td><td>Moving picture with no sound, over the antenna signal</td></tr>
+            <tr class="grp"><td class="os">First-party streaming</td><td class="muted">–</td><td>The free streaming service built into the TV's operating system</td></tr>
+            <tr class="grp"><td class="os" rowspan="3">Third-party streaming</td><td>Netflix</td><td>A subscription-only service</td></tr>
+            <tr><td>Tubi TV</td><td>A free, ad-supported service</td></tr>
+            <tr><td>YouTube</td><td>A hybrid of free and paid content</td></tr>
+            <tr class="grp"><td class="os">HDMI</td><td class="muted">–</td><td>Moving picture with sound from an external device</td></tr>
+            <tr class="grp"><td class="os">Screen mirroring</td><td class="muted">–</td><td>A phone or laptop mirrored over the TV's own protocol, playing video with sound</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+ 
     <!-- ---------- Antenna sub-scenarios ---------- -->
     <div class="method-block">
       <h3>Separating sound from picture</h3>
@@ -157,36 +180,17 @@
           <tbody>
             <tr><td class="os">Channel</td><td class="c yes">Yes</td><td class="c yes">Yes</td><td>Baseline: ACR can use either signal</td></tr>
             <tr><td class="os">Black screen + audio</td><td class="c no">No</td><td class="c yes">Yes</td><td>Traffic here points to audio fingerprinting</td></tr>
-            <tr><td class="os">Dynamic content + no audio</td><td class="c yes">Yes</td><td class="c no">No</td><td>Traffic here points to video fingerprinting</td></tr>
+            <tr><td class="os">Dynamic + no audio</td><td class="c yes">Yes</td><td class="c no">No</td><td>Traffic here points to video fingerprinting</td></tr>
           </tbody>
         </table>
       </div>
     </div>
  
-    <!-- ---------- All scenarios ---------- -->
-    <div class="method-grid method-block">
-      <div>
-        <h3>Ten viewing scenarios</h3>
-        <p>The scenarios cover common ways people use a smart TV. An idle scenario, with the TV on but nothing playing, is the control for spotting baseline traffic.</p>
-        <!-- EDIT: complete the list to match Table 3 -->
-        <ul class="scenario-list">
-          <li>Idle (control)</li>
-          <li>Antenna: Channel</li>
-          <li>Antenna: Black screen + audio</li>
-          <li>Antenna: Dynamic content + no audio</li>
-          <li>HDMI input</li>
-          <li>Screen mirroring</li>
-          <li>[Scenario 7]</li>
-          <li>[Scenario 8]</li>
-          <li>[Scenario 9]</li>
-          <li>[Scenario 10]</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Running it without a remote</h3>
-        <p>We wrote control scripts using each OS's Python remote-control library for six of the operating systems. Xumo OS and VIDAA OS had no reliable library, so we drove them through their Android remote apps using ADB.</p>
-        <p>The hard part was that TV menus change, so each OS needed its own tested sequence of commands. An IP camera on every TV recorded each run, and we reviewed the frames to confirm it worked. Runs that failed because of internet outages or unexpected TV behavior were repeated.</p>
-      </div>
+    <!-- ---------- Automation ---------- -->
+    <div class="method-block measure">
+      <h3>Running it without a remote</h3>
+      <p>We wrote control scripts using each OS's Python remote-control library for six of the operating systems. Xumo OS and VIDAA OS had no reliable library, so we drove them through their Android remote apps using ADB.</p>
+      <p>The hard part was that TV menus change, so each OS needed its own tested sequence of commands. An IP camera on every TV recorded each run, and we reviewed the frames to confirm it worked. Runs that failed because of internet outages or unexpected TV behavior were repeated.</p>
     </div>
  
     <!-- ---------- How each question is answered ---------- -->

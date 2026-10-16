@@ -61,15 +61,23 @@ function buildGrid() {
   function render() {
     const onClass = mode === "optedIn" ? "on-in" : "on-out";
     legendOn.style.background = mode === "optedIn" ? "var(--glow)" : "var(--led)";
+    // group header row
     let html = "<thead><tr><th></th>";
-    SCENARIOS.forEach((s, j) => html += `<th scope="col" title="${s}">S${j + 1}</th>`);
+    for (let j = 0; j < SCENARIOS.length; ) {
+      const g = SCENARIOS[j].group; let span = 1;
+      while (g && j + span < SCENARIOS.length && SCENARIOS[j + span].group === g) span++;
+      html += g ? `<th class="grp" colspan="${span}" scope="colgroup">${g}</th>` : "<th></th>";
+      j += span;
+    }
+    html += "<th></th></tr><tr><th></th>";
+    SCENARIOS.forEach(s => html += `<th scope="col" title="${s.name}">${s.short}</th>`);
     html += "<th></th></tr></thead><tbody>";
     OPT_OUT_RESULTS.forEach((r, i) => {
       const vals = r[mode], hits = vals.filter(Boolean).length;
       html += `<tr><th scope="row" class="row">${r.os}</th>`;
       vals.forEach((v, j) => {
         const sel = selected && selected[0] === i && selected[1] === j ? " sel" : "";
-        html += `<td class="${v ? onClass : ""}${sel}" tabindex="0" data-i="${i}" data-j="${j}" aria-label="${r.os}, ${SCENARIOS[j]}: ${v ? "ACR traffic observed" : "no ACR traffic"}"></td>`;
+        html += `<td class="${v ? onClass : ""}${sel}" tabindex="0" data-i="${i}" data-j="${j}" aria-label="${r.os}, ${SCENARIOS[j].name}: ${v ? "ACR traffic observed" : "no ACR traffic"}"></td>`;
       });
       html += `<td class="rate">${hits} / ${vals.length}</td></tr>`;
     });
@@ -79,7 +87,7 @@ function buildGrid() {
     selected = [i, j];
     const r = OPT_OUT_RESULTS[i], v = r[mode][j];
     const state = mode === "optedIn" ? "ACR opted in" : "ACR opted out";
-    insp.innerHTML = `<b>${r.os}</b>, ${SCENARIOS[j]}, ${state}: ${v ? "ACR-attributable traffic observed." : "no ACR-attributable traffic."}${r.note ? " " + r.note : ""}`;
+    insp.innerHTML = `<b>${r.os}</b>, ${SCENARIOS[j].name}, ${state}: ${v ? "ACR-attributable traffic observed." : "no ACR-attributable traffic."}${r.note ? " " + r.note : ""}`;
     render();
   }
   table.addEventListener("click", e => { const td = e.target.closest("td[data-i]"); if (td) inspect(+td.dataset.i, +td.dataset.j); });
