@@ -189,6 +189,13 @@ table.signal td.no{ color:var(--ink-2); }
   .two-steps li + li{ border-left:none; border-top:2px solid var(--ink); }
 }
 
+table.oses td.share{ width:40%; }
+table.oses .share-num{ display:inline-block; width:3.2em; font-weight:600; font-variant-numeric:tabular-nums; }
+table.oses .share-cell{ display:flex; align-items:center; gap:8px; }
+table.oses .share-track{ flex:1; max-width:260px; }
+table.oses .share-bar{ display:block; height:10px; min-width:4px; background:var(--glow); border-radius:2px; }
+table.oses tfoot td{ border-top:2px solid var(--rule); border-bottom:none; font-weight:600; }
+
 /* ---------- finding: opt-out grid ---------- */
 .finding-stat{ display:flex; gap:40px; flex-wrap:wrap; margin:8px 0 36px; }
 .finding-stat div{ max-width:22ch; }

@@ -30,6 +30,9 @@ const SCENARIOS = [
    note: optional text shown in the inspector for that OS.
    The values below are PLACEHOLDERS shaped to match the abstract;
    replace them with your measured results. */
+/* The eight OSes in the study (Table 2): Tizen OS, Roku OS, webOS,
+   SmartCast OS, Google TV OS, Fire TV OS, VIDAA OS, Xumo OS.
+   Rename each "[OS n]" row below when you enter its real results. */
 const OPT_OUT_RESULTS = [
   { os: "Samsung Tizen",   optedIn: [1,1,1,1,1,1,1,1,1,1], optedOut: [1,1,0,1,1,0,1,1,0,1], note: "[Endpoint(s) observed]" },
   { os: "Vizio SmartCast", optedIn: [1,1,1,1,1,1,1,1,1,1], optedOut: [1,1,1,1,1,1,1,1,1,1], note: "Content-correlated endpoint hosted on Amazon Kinesis." },
