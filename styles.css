@@ -326,12 +326,18 @@ table.optgrid th span{ display:block; font-weight:400; font-size:0.78rem; color:
 table.optgrid thead th.end{ text-align:left; padding-left:10px; }
 table.optgrid td{ font-size:0.72rem; font-weight:600; color:#fff; text-align:center; font-variant-numeric:tabular-nums; }
 table.optgrid td.on-out{ background:rgba(226,56,43,var(--a,1)); }
-table.optgrid td.na{ background:repeating-linear-gradient(135deg, #283272 0 5px, #6B4A86 5px 10px); }
+table.optgrid td.on-in{ background:rgba(91,124,255,var(--a,1)); }
+table.optgrid td.na{ background-image:repeating-linear-gradient(135deg, transparent 0 6px, rgba(255,255,255,0.28) 6px 8px); }
 table.optgrid td.unk{ background:transparent; border:1px dashed #5A67B8; color:var(--glow-soft); }
 table.optgrid td.rate{ text-align:left; font-weight:500; font-size:0.85rem; white-space:normal; line-height:1.25; }
 table.optgrid td.verdict{ color:#9FE0C0; }
 table.optgrid td.verdict.bad{ color:#FFB4AC; }
-.legend .na-swatch{ background:repeating-linear-gradient(135deg, #283272 0 3px, #6B4A86 3px 6px); }
+.legend .na-swatch{ background-color:#B5302A; background-image:repeating-linear-gradient(135deg, transparent 0 3px, rgba(255,255,255,0.4) 3px 5px); }
+.legend .ramp{ width:90px; height:12px; border-radius:3px; }
+.legend .ramp.blue{ background:linear-gradient(90deg, rgba(91,124,255,0.25), var(--glow)); }
+.legend .ramp.red{ background:linear-gradient(90deg, rgba(226,56,43,0.25), var(--led)); }
+.figure.fig6{ max-width:560px; }
+.figure.fig6 img{ background:#fff; }
 .method-block.first{ margin-top:0; }
 .tag{ display:inline-block; font-size:0.85rem; font-weight:600; padding:3px 10px; border-radius:20px; background:var(--wall); border:1px solid var(--rule); color:var(--ink-2); }
 .tag.video{ background:#E6EBFF; border-color:var(--glow-soft); color:var(--screen); }
@@ -356,3 +362,7 @@ table.optgrid td.verdict.bad{ color:#FFB4AC; }
 .dns-key i{ width:12px; height:12px; border-radius:2px; display:inline-block; }
 .k-slug{ background:var(--led); } .k-plat{ background:var(--glow); }
 .broker{ margin-top:64px; }
+
+.fig-row{ grid-template-columns:1fr; gap:32px; margin-top:20px; }
+.fig-row .table-wrap{ margin-top:0; }
+@media (max-width:900px){ .fig-row{ grid-template-columns:1fr; } }

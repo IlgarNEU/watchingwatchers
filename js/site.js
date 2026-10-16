@@ -47,16 +47,18 @@ function startTV() {
 }
 
 /* ---------- Result grids ----------
-   Any <table class="optgrid" data-mode="optedIn|optedOut"> is filled in. */
-function cellInfo(mode, v) {
-  if (v === null || v === undefined) return { cls: "unk", text: "?", desc: "not yet filled in" };
-  if (mode === "optedIn") return v ? { cls: "on-in", text: "", desc: "ACR-attributable traffic" } : { cls: "", text: "", desc: "no ACR-attributable traffic" };
-  if (v === "na") return { cls: "na", text: "", desc: "the opt-out does not apply to this scenario" };
-  let n, of = 30;
-  if (typeof v === "string") { [n, of] = v.split("/").map(Number); } else n = v;
-  if (!n) return { cls: "", text: "", desc: "no traffic consistent with ACR" };
-  return { cls: "on-out", text: typeof v === "string" ? v : `${n}`, alpha: 0.35 + 0.65 * n / of,
-           desc: `traffic consistent with ACR in ${n} of ${of} measurements` };
+   Any <table class="optgrid" data-mode="optedIn|optedOut"> is filled in.
+   Each square shows the share of 30 runs (Figure 7). */
+function cellInfo(mode, v, na) {
+  const runs = Math.round(v * 30 / 100);
+  const share = `${v}% of runs (${runs} of 30)`;
+  if (mode === "optedIn") {
+    const tracked = v >= TRACKED_THRESHOLD;
+    return { cls: v ? "on-in" : "", text: v ? `${v}` : "", alpha: v ? 0.25 + 0.75 * v / 100 : 0,
+             desc: v ? `content-correlated traffic in ${share}, so ${tracked ? "tracked" : "not tracked"}` : "no content-correlated traffic, so not tracked" };
+  }
+  return { cls: (v ? "on-out" : "") + (na ? " na" : ""), text: v ? `${v}` : "", alpha: v ? 0.25 + 0.75 * v / 100 : 0,
+           desc: (v ? `traffic consistent with ACR in ${share}` : "no traffic consistent with ACR") + (na ? "; the opt-out does not apply here" : "") };
 }
 
 function buildGrid(table) {
@@ -79,24 +81,25 @@ function buildGrid(table) {
     RESULTS.forEach((r, i) => {
       html += `<tr><th scope="row" class="row">${r.os}<span>${r.tv}</span></th>`;
       r[mode].forEach((v, j) => {
-        const c = cellInfo(mode, v);
+        const na = mode === "optedOut" && (r.naOut || []).includes(j);
+        const c = cellInfo(mode, v, na);
         const sel = selected && selected[0] === i && selected[1] === j ? " sel" : "";
         const style = c.alpha ? ` style="--a:${c.alpha.toFixed(2)}"` : "";
         html += `<td class="${c.cls}${sel}"${style} tabindex="0" data-i="${i}" data-j="${j}" aria-label="${r.os} (${r.tv}), ${SCENARIOS[j].name}: ${c.desc}">${c.text}</td>`;
       });
       if (mode === "optedIn") {
-        const known = r.optedIn.filter(v => v !== null), hits = known.filter(Boolean).length;
-        html += `<td class="rate">${hits} of ${r.optedIn.length}</td></tr>`;
+        html += `<td class="rate">${r.optedIn.filter(v => v >= TRACKED_THRESHOLD).length} of ${r.optedIn.length}</td></tr>`;
       } else {
-        const bad = r.verdict !== "Effective";
-        html += `<td class="rate verdict${bad ? " bad" : ""}">${r.verdict}</td></tr>`;
+        html += `<td class="rate verdict${r.verdict !== "Effective" ? " bad" : ""}">${r.verdict}</td></tr>`;
       }
     });
     table.innerHTML = html + "</tbody>";
   }
   function inspect(i, j) {
     selected = [i, j];
-    const r = RESULTS[i], c = cellInfo(mode, r[mode][j]);
+    const r = RESULTS[i];
+    const na = mode === "optedOut" && (r.naOut || []).includes(j);
+    const c = cellInfo(mode, r[mode][j], na);
     const notes = (mode === "optedIn" ? r.inNotes : r.outNotes) || {};
     const state = mode === "optedIn" ? "ACR opted in" : "ACR opted out";
     insp.innerHTML = `<b>${r.os} (${r.tv})</b>, ${SCENARIOS[j].name}, ${state}: ${c.desc}.${notes[j] ? " " + notes[j] : ""}`;
@@ -111,10 +114,6 @@ function buildGrid(table) {
     }
   });
   render();
-
-  const missing = RESULTS.some(r => r[mode].some(v => v === null));
-  const banner = document.getElementById(table.dataset.banner);
-  if (banner && missing) banner.classList.add("show");
 }
 
 document.addEventListener("DOMContentLoaded", () => {

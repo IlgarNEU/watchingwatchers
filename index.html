@@ -244,24 +244,22 @@
         <li><b>No TV tracked Netflix or YouTube.</b> For Netflix, this matches publicly reported agreements.</li>
         <li><b>Tubi, a free ad-supported service, was tracked</b> on Tizen OS (in 29 of 30 runs), Google TV on Sony, and VIDAA OS.</li>
         <li><b>Most operating systems also tracked their own built-in streaming service.</b> Fire TV OS and Google TV on Sony were the exceptions.</li>
-        <li><b>HDMI tracking varied</b>, and Roku OS was the only one that didn't track it. <b>Screen mirroring was tracked only on VIDAA OS.</b></li>
+        <li><b>HDMI was tracked on five of the seven operating systems</b>, but not on Roku OS or SmartCast OS. <b>Screen mirroring was tracked only on VIDAA OS.</b></li>
         <li><b>Vizio's SmartCast OS sent ACR-pattern traffic even when the TV sat idle</b> on its home screen, in every run.</li>
       </ul>
     </div>
 
     <div class="grid-panel">
-      <div class="sample-banner" id="banner-in">Squares marked ? aren't stated in the paper's text. Fill them in from Figure 7 in js/data.js.</div>
       <div class="grid-controls">
-        <h3 class="grid-title">ACR-attributable traffic with ACR turned on</h3>
+        <h3 class="grid-title">Runs with content-correlated ACR traffic, ACR turned on</h3>
         <div class="legend">
-          <span><i style="background:var(--glow)"></i>Tracked</span>
-          <span><i style="background:#283272"></i>Not tracked</span>
+          <span>0%</span><i class="ramp blue"></i><span>100% of runs</span>
         </div>
       </div>
-      <div class="og-scroll"><table class="optgrid" data-mode="optedIn" data-inspector="insp-in" data-banner="banner-in"></table></div>
+      <div class="og-scroll"><table class="optgrid" data-mode="optedIn" data-inspector="insp-in"></table></div>
       <div class="inspector" id="insp-in">Select a square to see the scenario and what we observed.</div>
     </div>
-    <p class="note">Only operating systems where we identified and validated an ACR endpoint are shown. Roku OS has a row for each of its two TVs.</p>
+    <p class="note">Each square shows the share of 30 runs in which the ACR endpoint received content-correlated traffic; 80% or more counts as tracked. Only operating systems where we identified and validated an ACR endpoint are shown, and Roku OS has a row for each of its two TVs.</p>
   </div>
 </section>
 
@@ -290,16 +288,14 @@
     </div>
 
     <div class="grid-panel">
-      <div class="sample-banner" id="banner-out">Squares marked ? aren't stated in the paper's text. Fill them in from Figure 7 in js/data.js.</div>
       <div class="grid-controls">
-        <h3 class="grid-title">Traffic consistent with ACR after opting out</h3>
+        <h3 class="grid-title">Runs with traffic consistent with ACR, after opting out</h3>
         <div class="legend">
-          <span><i style="background:var(--led)"></i>Runs with ACR-like traffic</span>
+          <span>0%</span><i class="ramp red"></i><span>100% of runs</span>
           <span><i class="na-swatch"></i>Opt-out doesn't apply</span>
-          <span><i style="background:#283272"></i>None</span>
         </div>
       </div>
-      <div class="og-scroll"><table class="optgrid" data-mode="optedOut" data-inspector="insp-out" data-banner="banner-out"></table></div>
+      <div class="og-scroll"><table class="optgrid" data-mode="optedOut" data-inspector="insp-out"></table></div>
       <div class="inspector" id="insp-out">Select a square to see the scenario and what we observed.</div>
     </div>
 
@@ -322,7 +318,13 @@
     <div class="method-block first">
       <h3>Listening or looking?</h3>
       <p class="measure">By removing the picture or the sound from our antenna channel, we can tell which signal each TV's ACR relies on.</p>
-      <div class="table-wrap">
+      <div class="method-grid fig-row">
+        <figure class="figure fig6">
+          <img src="images/figure6-fingerprint.png" alt="Two charts of upload traffic to the ACR endpoint. On LG webOS, traffic drops sharply when video plays without sound. On Sony Google TV, traffic drops when a black screen plays with sound.">
+          <figcaption>Upload traffic to the ACR endpoint for each antenna sub-scenario. Lines further left mean less traffic. LG's webOS goes quiet without sound (audio-based ACR); Sony's Google TV goes quiet on a black screen (video-based ACR).</figcaption>
+        </figure>
+        <div>
+          <div class="table-wrap">
         <table class="devices fingerprint">
           <thead><tr><th>Operating system</th><th>Recognizes content by</th><th>What we saw</th></tr></thead>
           <tbody>
@@ -333,6 +335,8 @@
             <tr><td class="os">Fire TV OS, Roku OS, SmartCast OS</td><td><span class="tag">Can't tell</span></td><td>Traffic looked the same with and without picture or sound.</td></tr>
           </tbody>
         </table>
+      </div>
+        </div>
       </div>
     </div>
 
