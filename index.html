@@ -113,58 +113,120 @@
       <div class="kicker">Method</div>
       <div class="measure">
         <h2>An automated living room</h2>
-        <p class="lede">We built a testbed that drives each TV through the same viewing scenarios without a person at the remote, while recording all of its network traffic.</p>
+        <p class="lede">We built a testbed that plays the same content on every TV without anyone at the remote, records all of its network traffic, and then works out which traffic belongs to ACR.</p>
       </div>
     </div>
-
-    <div class="method-grid">
+ 
+    <ol class="two-steps">
+      <li><h3>Collect the data</h3><p>Run thousands of controlled viewing experiments on 12 TVs and capture every packet they send and receive.</p></li>
+      <li><h3>Identify ACR endpoints</h3><p>Use the controlled content to pick out the servers that respond to what's on screen, then compare their traffic across conditions.</p></li>
+    </ol>
+ 
+    <!-- ---------- Testbed ---------- -->
+    <div class="method-grid method-block">
       <figure class="figure">
-        <img src="images/testbed.jpg" alt="The smart-TV testbed" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <div class="photo-fallback">Add a photo of the testbed at images/testbed.jpg</div>
-        <figcaption>[Caption describing the testbed photo.]</figcaption>
+        <img src="images/testbed.png" alt="Diagram of the testbed: a control machine feeds content to each TV through an antenna modulator, an HDMI converter and screen mirroring, while all traffic is captured" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="photo-fallback">Add the testbed diagram (Figure 2) at images/testbed.png</div>
+        <figcaption>The testbed. [Edit caption.]</figcaption>
       </figure>
       <div>
-        <h3>Two settings for every test</h3>
-        <p>Each scenario ran once with ACR enabled and once after following the TV's own instructions to opt out.</p>
-        <div class="states">
-          <div class="state"><h3><span class="dot" style="background:var(--glow)"></span>Opted in</h3><p>Shows which endpoints are tied to ACR and what triggers them.</p></div>
-          <div class="state"><h3><span class="dot" style="background:var(--led)"></span>Opted out</h3><p>Any ACR traffic here means the opt-out isn't fully working.</p></div>
-        </div>
-        <h3>Ten viewing scenarios</h3>
-        <!-- EDIT: replace with your ten scenarios -->
-        <ol class="scenario-list">
-          <li>[Scenario 1]</li><li>[Scenario 2]</li><li>[Scenario 3]</li><li>[Scenario 4]</li><li>[Scenario 5]</li>
-          <li>[Scenario 6]</li><li>[Scenario 7]</li><li>[Scenario 8]</li><li>[Scenario 9]</li><li>[Scenario 10]</li>
-        </ol>
+        <h3>The testbed</h3>
+        <p>Twelve smart TVs cover the eight operating systems that run about 95% of U.S. smart TVs, and more than 80% of the TV brands with over 3% of U.S. households. The operating system is what we compare, so we chose TVs to cover every major OS first, adding a second TV where one OS is sold by several brands.</p>
+        <p>All traffic to and from each TV was captured with the Mon(IoT)r software and the SPHERE research infrastructure. In total we ran 5,943 controlled experiments.</p>
       </div>
     </div>
-
-    <h3 style="margin-top:56px;">The TVs we tested</h3>
-    <p class="measure">Twelve commercial TVs covering the eight operating systems that run about 95% of U.S. smart TVs.</p>
-    <!-- EDIT: one row per TV -->
-    <div class="table-wrap">
-      <table class="devices">
-        <thead><tr><th>Operating system</th><th>Brand</th><th>Model</th><th>Year</th></tr></thead>
-        <tbody>
-          <tr><td class="os">Samsung Tizen</td><td>Samsung</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">Vizio SmartCast</td><td>Vizio</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS 3]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS 4]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS 5]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS 6]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS 7]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS 8]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-          <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
-        </tbody>
-      </table>
+ 
+    <!-- ---------- Getting content onto the TVs ---------- -->
+    <div class="method-block">
+      <h3>Getting content onto the screen</h3>
+      <p class="measure">A control machine sends the same content to every TV through three routes, so each viewing scenario is identical across devices.</p>
+      <div class="routes">
+        <div class="route"><h4>Antenna</h4><p>HDMI-to-RF modulators broadcast our own custom channel to each TV's antenna input.</p></div>
+        <div class="route"><h4>HDMI</h4><p>IP-to-HDMI converters turn video streamed from the control machine into an HDMI signal, like a cable box or console.</p></div>
+        <div class="route"><h4>Screen mirroring</h4><p>Google Pixel phones and a Windows laptop running Pigeoncast and Miracast cast to each TV using its own mirroring protocol.</p></div>
+      </div>
     </div>
-    <p class="note">Results reflect these devices and firmware versions at the time of testing and may not carry over to other models or regions.</p>
+ 
+    <!-- ---------- Antenna sub-scenarios ---------- -->
+    <div class="method-block">
+      <h3>Separating sound from picture</h3>
+      <p class="measure">Some ACR systems recognize content by its audio, others by its video. By switching each one off in turn on our custom antenna channel, we can tell which a TV relies on. The antenna is a natural ACR target, because what you watch over the air can't be tracked by any app.</p>
+      <div class="table-wrap">
+        <table class="devices signal">
+          <thead><tr><th>Antenna scenario</th><th class="c">Moving picture</th><th class="c">Sound</th><th>What it tells us</th></tr></thead>
+          <tbody>
+            <tr><td class="os">Channel</td><td class="c yes">Yes</td><td class="c yes">Yes</td><td>Baseline: ACR can use either signal</td></tr>
+            <tr><td class="os">Black screen + audio</td><td class="c no">No</td><td class="c yes">Yes</td><td>Traffic here points to audio fingerprinting</td></tr>
+            <tr><td class="os">Dynamic content + no audio</td><td class="c yes">Yes</td><td class="c no">No</td><td>Traffic here points to video fingerprinting</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+ 
+    <!-- ---------- All scenarios ---------- -->
+    <div class="method-grid method-block">
+      <div>
+        <h3>Ten viewing scenarios</h3>
+        <p>The scenarios cover common ways people use a smart TV. An idle scenario, with the TV on but nothing playing, is the control for spotting baseline traffic.</p>
+        <!-- EDIT: complete the list to match Table 3 -->
+        <ul class="scenario-list">
+          <li>Idle (control)</li>
+          <li>Antenna: Channel</li>
+          <li>Antenna: Black screen + audio</li>
+          <li>Antenna: Dynamic content + no audio</li>
+          <li>HDMI input</li>
+          <li>Screen mirroring</li>
+          <li>[Scenario 7]</li>
+          <li>[Scenario 8]</li>
+          <li>[Scenario 9]</li>
+          <li>[Scenario 10]</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Running it without a remote</h3>
+        <p>We wrote control scripts using each OS's Python remote-control library for six of the operating systems. Xumo OS and VIDAA OS had no reliable library, so we drove them through their Android remote apps using ADB.</p>
+        <p>The hard part was that TV menus change, so each OS needed its own tested sequence of commands. An IP camera on every TV recorded each run, and we reviewed the frames to confirm it worked. Runs that failed because of internet outages or unexpected TV behavior were repeated.</p>
+      </div>
+    </div>
+ 
+    <!-- ---------- How each question is answered ---------- -->
+    <div class="method-block">
+      <h3>How we answer each question</h3>
+      <ul class="questions rq-approach">
+        <li>Under what viewing conditions does ACR send traffic?<span>We identify each TV's ACR endpoints, then compare the traffic they receive in each of the ten scenarios.</span></li>
+        <li>Are ACR opt-outs offered, and do they work?<span>Every scenario runs 30 times with ACR on and 30 times after opting out in the TV's settings, in a random order so one test can't bleed into the next. We then compare ACR traffic between the two states.</span></li>
+        <li>What viewing information is exposed?<span>Where ACR traffic is unencrypted, we read it directly. Where it's encrypted, we infer what it carries from its timing, volume, destinations and protocol details. We also check whether content-delivery services leak viewing data outside ACR.</span></li>
+      </ul>
+    </div>
+ 
+    <!-- ---------- Devices ---------- -->
+    <div class="method-block">
+      <h3>The TVs we tested</h3>
+      <!-- EDIT: one row per TV (Table 2) -->
+      <div class="table-wrap">
+        <table class="devices">
+          <thead><tr><th>Operating system</th><th>Brand</th><th>Model</th><th>Year</th></tr></thead>
+          <tbody>
+            <tr><td class="os">Samsung Tizen</td><td>Samsung</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">Vizio SmartCast</td><td>Vizio</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">VIDAA OS</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">Xumo OS</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">[OS 5]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">[OS 6]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">[OS 7]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">[OS 8]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+            <tr><td class="os">[OS]</td><td>[Brand]</td><td>[Model]</td><td>[Year]</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Results reflect these devices and firmware versions at the time of testing and may not carry over to other models or regions.</p>
+    </div>
   </div>
 </section>
-
+ 
 <!-- ============ FINDING: OPT-OUT ============ -->
 <section class="alt" id="findings">
   <div class="wrap">
@@ -175,7 +237,7 @@
         <p class="lede">The advertised opt-out fully stopped ACR-attributable traffic on only half of the operating systems we tested.</p>
       </div>
     </div>
-
+ 
     <div class="body-col">
       <div class="finding-stat">
         <div><div class="big">4 of 8</div><div class="small">operating systems where opting out fully stopped ACR traffic</div></div>
@@ -183,7 +245,7 @@
         <div><div class="big red">100%</div><div class="small">of opted-out scenarios on Vizio SmartCast sent traffic to a content-correlated endpoint on Amazon Kinesis</div></div>
       </div>
     </div>
-
+ 
     <div class="grid-panel">
       <div class="sample-banner" id="sample-banner">Sample data. Replace it with your per-scenario results in js/data.js, then set SAMPLE_DATA to false.</div>
       <div class="grid-controls">
@@ -199,11 +261,11 @@
       <div class="og-scroll"><table class="optgrid" id="optgrid"></table></div>
       <div class="inspector" id="grid-inspector">Select a square to see the scenario and what was observed.</div>
     </div>
-
+ 
     <p class="caveat">These behaviors point to potential privacy violations. Because the traffic is encrypted, we can't see its contents, so we can't confirm exactly what data was sent.</p>
   </div>
 </section>
-
+ 
 <!-- ============ FINDING: EXPOSURE ============ -->
 <section id="exposure">
   <div class="wrap">
@@ -214,7 +276,7 @@
         <p class="lede">Beyond the companies that collect it, we found ACR viewing data reachable by anyone in a position to look.</p>
       </div>
     </div>
-
+ 
     <div class="exposure-grid">
       <div class="exposure">
         <h3>Sent without encryption</h3>
@@ -227,7 +289,7 @@
         <p>[Optional: disclosure timeline.]</p>
       </div>
     </div>
-
+ 
     <div class="broker">
       <div>
         <div class="huge">57,000,000</div>
@@ -241,7 +303,7 @@
     </div>
   </div>
 </section>
-
+ 
 <!-- ============ WHAT IT MEANS ============ -->
 <section class="alt" id="conclusion">
   <div class="wrap">
@@ -260,13 +322,13 @@
     </div>
   </div>
 </section>
-
+ 
 <footer>
   <div class="wrap">
     <p>© 2026 Northeastern University</p>
     <p><a href="paper.html">Read the paper</a></p>
   </div>
 </footer>
-
+ 
 </body>
 </html>
